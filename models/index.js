@@ -32,7 +32,7 @@ Page.beforeValidate(async (page, options) => {
 });
 
 Page.afterUpdate(async (page, options) => {
-  const newSlug = await generateSlug(page.title);
+  const newSlug = generateSlug(page.title);
   page.slug = newSlug;
 });
 

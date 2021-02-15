@@ -63,17 +63,21 @@ router.post('/:slug', async (req, res, next) => {
   try {
     console.log(req.body);
 
+    function generateSlug(title) {
+      return title.replace(/\s+/g, '_').replace(/\W/g, '');
+    }
+
     const updatedPage = await Page.update(
       {
         title: req.body.title,
         content: req.body.content,
         status: req.body.status,
+        slug: generateSlug(req.body.title),
       },
       { where: { slug: req.params.slug }, returning: true, plain: true }
     );
 
-    console.log(updatedPage);
-    res.redirect(`/wiki`);
+    res.redirect(`/wiki/${updatedPage[1].slug}`);
   } catch (err) {
     next(err);
   }
@@ -86,6 +90,15 @@ router.get('/:slug/edit', async (req, res, next) => {
     let author = await User.findByPk(page.authorId);
 
     res.send(editPage(page, author));
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/:slug/delete', async (req, res, next) => {
+  try {
+    await Page.destroy({ where: { slug: req.params.slug } });
+    res.redirect(`/wiki`);
   } catch (err) {
     next(err);
   }
