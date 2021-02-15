@@ -24,13 +24,18 @@ router.post('/', async (req, res, next) => {
 
     console.log('user', user);
 
+    const newTags = req.body.tags.replace(',', '').split(' ');
+
     let newPost = await Page.create({
       title: req.body.title,
       content: req.body.content,
       status: req.body.status,
+      tags: newTags,
     });
 
     await newPost.setAuthor(user[0]);
+
+    console.log(newPost);
 
     res.redirect(`/wiki/${newPost.slug}`);
   } catch (err) {
@@ -73,6 +78,7 @@ router.post('/:slug', async (req, res, next) => {
         content: req.body.content,
         status: req.body.status,
         slug: generateSlug(req.body.title),
+        tags: req.body.tags.replace(',', '').split(' '),
       },
       { where: { slug: req.params.slug }, returning: true, plain: true }
     );

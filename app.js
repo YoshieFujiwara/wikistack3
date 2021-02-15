@@ -16,9 +16,22 @@ app.use(express.static('public'));
 app.use('/wiki', require('./routes/wiki'));
 app.use('/user', require('./routes/user'));
 
+//views
+const { notFound404, serverError500 } = require('./views');
+
 //root directory
 app.get('/', (req, res) => {
   res.redirect('/wiki');
+});
+
+//error handling
+app.use((req, res, next) => {
+  res.status(404).send(notFound404());
+});
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send(serverError500());
 });
 
 //webserver & DB connection

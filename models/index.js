@@ -17,6 +17,10 @@ const Page = db.define('page', {
     values: ['open', 'closed'],
     defaultValue: 'open',
   },
+  tags: {
+    type: Sequelize.ARRAY(Sequelize.STRING),
+    defaultValue: [],
+  },
 });
 
 //hook - need to develop still
@@ -28,11 +32,6 @@ function generateSlug(title) {
 
 Page.beforeValidate(async (page, options) => {
   const newSlug = await generateSlug(page.title);
-  page.slug = newSlug;
-});
-
-Page.afterUpdate(async (page, options) => {
-  const newSlug = generateSlug(page.title);
   page.slug = newSlug;
 });
 
