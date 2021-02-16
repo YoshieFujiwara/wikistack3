@@ -5,10 +5,18 @@ const router = express.Router();
 const { Page, User } = require('../models');
 
 //views
-const { addPage, main, wikipage, wikiPage, editPage } = require('../views');
+const {
+  addPage,
+  main,
+  wikipage,
+  wikiPage,
+  editPage,
+  tagSearch,
+} = require('../views');
 
 router.get('/', async (req, res, next) => {
   try {
+    console.log(req.body);
     const allPosts = await Page.findAll();
     res.send(main(allPosts));
   } catch (err) {
@@ -45,6 +53,15 @@ router.post('/', async (req, res, next) => {
 
 router.get('/add', (req, res, next) => {
   res.send(addPage());
+});
+
+router.get('/search', (req, res, next) => {
+  try {
+    console.log('req.query', req.query, 'req. body', req.body);
+    res.send(tagSearch());
+  } catch (err) {
+    next(err);
+  }
 });
 
 router.get('/:slug', async (req, res, next) => {
